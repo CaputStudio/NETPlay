@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package form;
+package br.com.form;
 
 import java.awt.Color;
 import javax.swing.JOptionPane;
@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  *
  * @author daylton
  */
-public class FrmHash extends javax.swing.JFrame {
+public class FormCliente extends javax.swing.JFrame {
 
     /**
      * Creates new form FrmHash
@@ -21,7 +21,7 @@ public class FrmHash extends javax.swing.JFrame {
     int player;
     int cont; // verificar se dará velha
     
-    public FrmHash() {
+    public FormCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
         player = 1;
@@ -455,20 +455,21 @@ public class FrmHash extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmHash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmHash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmHash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmHash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmHash().setVisible(true);
+                new FormCliente().setVisible(true);
             }
         });
     }
