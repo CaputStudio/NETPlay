@@ -10,5 +10,6 @@ package br.com.game;
  * @author joao
  */
 public class GameUtils {
+    //Classe para cuidar de vereficação, é uma classe com funções uteis para validar jogadas, setar algo
     
 }
