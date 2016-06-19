@@ -114,7 +114,20 @@ public class FormClienteSecundario extends JFrame{
         gc.setVez(ladoEscolhido);
         jogo = gc.getJogo();
         jogo.set(posicao, ladoEscolhido);
+        this.atualizaBotoes(jogo);
         
+    }
+    
+    public void atualizaBotoes(ArrayList<String> jogo){
+        this.btn1.setText(jogo.get(0));
+        this.btn2.setText(jogo.get(1));
+        this.btn3.setText(jogo.get(2));
+        this.btn4.setText(jogo.get(3));
+        this.btn5.setText(jogo.get(4));
+        this.btn6.setText(jogo.get(5));
+        this.btn7.setText(jogo.get(6));
+        this.btn8.setText(jogo.get(7));
+        this.btn9.setText(jogo.get(8));
     }
     
 }

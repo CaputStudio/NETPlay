@@ -49,7 +49,7 @@ public class Cliente implements Runnable{
 
             //Cria  objeto para enviar a mensagem ao servidor
             saida = new PrintStream(this.cliente.getOutputStream());
-
+            
             //Envia mensagem ao servidor
             while(teclado.hasNextLine()){
                 saida.println(teclado.nextLine());          

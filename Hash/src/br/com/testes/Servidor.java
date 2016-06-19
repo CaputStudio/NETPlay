@@ -49,6 +49,7 @@ public class Servidor implements Runnable{
     */
     public void run(){
         System.out.println("Nova conexao com o cliente " + this.cliente.getInetAddress().getCanonicalHostName());
+        System.out.println("Porta: " + this.cliente.getPort());
 
         try {
             Scanner s = null;
