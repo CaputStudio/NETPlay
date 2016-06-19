@@ -33,7 +33,7 @@ public class FormClienteSecundario extends JFrame{
     final private JButton btnConecta;
     final private JButton btnFecha;
     final private String ladoEscolhido;
-    private Cliente c;
+    private ClienteTeste c;
     private ArrayList<String> jogo;
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public FormClienteSecundario(String lado){
@@ -76,7 +76,7 @@ public class FormClienteSecundario extends JFrame{
         this.setLayout(layoutPrincipal);
         this.getContentPane().add(painelGame);
         this.getContentPane().add(painelLateral);
-        c = new Cliente(lado, 12345);
+        c = new ClienteTeste(lado, 12345);
         
         
         btn1.addActionListener((java.awt.event.ActionEvent evt) -> {
