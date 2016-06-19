@@ -6,6 +6,7 @@
 package br.com.testes;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -18,9 +19,11 @@ import java.util.Scanner;
 public class Cliente implements Runnable{
 
     private Socket cliente;
+    private int id;
 
-    public Cliente(Socket cliente){
+    public Cliente(Socket cliente, int id){
         this.cliente = cliente;
+        this.id = id;
     }
 
     public static void main(String args[]) throws UnknownHostException, IOException {
@@ -34,29 +37,31 @@ public class Cliente implements Runnable{
 
         /*Cria um novo objeto Cliente com a conexão socket para que seja executado em um novo processo.
         Permitindo assim a conexão de vário clientes com o servidor.*/
-        Cliente c = new Cliente(socket);
+        Cliente c = new Cliente(socket, 1);
         Thread t = new Thread(c);
         t.start();
+    }
+    
+    public int getId(){
+        return this.id;
     }
 
     public void run() {
         try {
-            PrintStream saida;
+            ObjectOutputStream oos;
             System.out.println("O cliente conectou ao servidor");
 
-            //Prepara para leitura do teclado
-            Scanner teclado = new Scanner(System.in);
-
-            //Cria  objeto para enviar a mensagem ao servidor
-            saida = new PrintStream(this.cliente.getOutputStream());
             
+            //Cria  objeto para enviar a mensagem ao servidor
+            oos = new ObjectOutputStream(this.cliente.getOutputStream());
+            boolean flag = true;
             //Envia mensagem ao servidor
-            while(teclado.hasNextLine()){
-                saida.println(teclado.nextLine());          
+            while(flag){
+                GameTeste gc = new GameTeste("X");
+                oos.writeObject(gc);
             }
 
-            saida.close();
-            teclado.close();
+            oos.close();
             this.cliente.close();
             System.out.println("Fim do cliente!");
         } catch (IOException e) {

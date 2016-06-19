@@ -6,6 +6,7 @@
 package br.com.testes;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -52,18 +53,15 @@ public class Servidor implements Runnable{
         System.out.println("Porta: " + this.cliente.getPort());
 
         try {
-            Scanner s = null;
-            s = new Scanner(this.cliente.getInputStream());
-
-            //Exibe mensagem no console
-            while(s.hasNextLine()){
-                System.out.println(s.nextLine());
+            ObjectInputStream ois = new ObjectInputStream(this.cliente.getInputStream());
+            boolean flag = true;
+            while(flag){
+                GameTeste gc = (GameTeste) ois.readObject();
+                System.out.println(gc.getVez());
             }
-
-            //Finaliza objetos
-            s.close();
+            ois.close();
             this.cliente.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
