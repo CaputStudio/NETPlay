@@ -110,7 +110,7 @@ public class FormClienteSecundario extends JFrame{
     }
     
     public void guardaPosicaoEscolhida(int posicao){
-        GameTeste gc = c.getGameTeste();
+        Jogo gc = c.getGameTeste();
         gc.setVez(ladoEscolhido);
         jogo = gc.getJogo();
         jogo.set(posicao, ladoEscolhido);

@@ -19,11 +19,9 @@ import java.util.Scanner;
 public class Cliente implements Runnable{
 
     private Socket cliente;
-    private int id;
 
-    public Cliente(Socket cliente, int id){
+    public Cliente(Socket cliente){
         this.cliente = cliente;
-        this.id = id;
     }
 
     public static void main(String args[]) throws UnknownHostException, IOException {
@@ -37,14 +35,11 @@ public class Cliente implements Runnable{
 
         /*Cria um novo objeto Cliente com a conexão socket para que seja executado em um novo processo.
         Permitindo assim a conexão de vário clientes com o servidor.*/
-        Cliente c = new Cliente(socket, 1);
+        Cliente c = new Cliente(socket);
         Thread t = new Thread(c);
         t.start();
     }
-    
-    public int getId(){
-        return this.id;
-    }
+
 
     public void run() {
         try {
@@ -57,8 +52,10 @@ public class Cliente implements Runnable{
             boolean flag = true;
             //Envia mensagem ao servidor
             while(flag){
-                GameTeste gc = new GameTeste("X");
-                oos.writeObject(gc);
+                
+                Passador p = new Passador(new Jogo("X"), 1);
+                oos.writeObject(p);
+                flag = false;
             }
 
             oos.close();

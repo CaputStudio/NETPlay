@@ -15,14 +15,14 @@ import javax.swing.JOptionPane;
  * @author Guilherme Lourenço
  */
 public class ClienteTeste extends Thread{
-    private GameTeste gc;
+    private Jogo gc;
     
     public ClienteTeste(String lado, int porta){
         
           try {
                 Socket cliente = new Socket("127.0.0.1",porta);
                 ObjectInputStream entrada = new ObjectInputStream(cliente.getInputStream());
-                gc = (GameTeste)entrada.readObject();
+                gc = (Jogo)entrada.readObject();
                 entrada.close();
                 System.out.println("Conexão encerrada");
             }
@@ -31,7 +31,7 @@ public class ClienteTeste extends Thread{
             }
     }
     
-    public GameTeste getGameTeste(){
+    public Jogo getGameTeste(){
         return this.gc;
     }
 }

@@ -12,13 +12,13 @@ import java.util.ArrayList;
  *
  * @author Guilherme Lourenço
  */
-public class GameTeste  implements Serializable{
+public class Jogo  implements Serializable{
     //String X ou O que indica quem deve jogar
     private String vez;
     //Esse array deve ter 9 posicoes com uma string X ou O
     private ArrayList<String> jogo;
     
-    public GameTeste(String vez){
+    public Jogo(String vez){
         this.vez = vez;
         this.jogo = new ArrayList<>();
         this.jogo.add("");

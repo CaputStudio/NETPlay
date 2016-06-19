@@ -56,8 +56,9 @@ public class Servidor implements Runnable{
             ObjectInputStream ois = new ObjectInputStream(this.cliente.getInputStream());
             boolean flag = true;
             while(flag){
-                GameTeste gc = (GameTeste) ois.readObject();
-                System.out.println(gc.getVez());
+                Passador p = (Passador) ois.readObject();
+                System.out.println(p.getJogo().getVez() + " ID: " + p.getId());
+                flag = false;
             }
             ois.close();
             this.cliente.close();

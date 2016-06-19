@@ -107,7 +107,7 @@ public class FormServidor extends javax.swing.JFrame {
                     listaClientesConectados.setModel(dlm);
                     ObjectOutputStream saida = new ObjectOutputStream(cliente.getOutputStream());
                     saida.flush();
-                    saida.writeObject(new GameTeste("X"));
+                    saida.writeObject(new Jogo("X"));
                     saida.close();
                     cliente.close();
                 //}
