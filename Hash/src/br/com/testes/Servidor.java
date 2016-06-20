@@ -57,7 +57,7 @@ public class Servidor implements Runnable{
             boolean flag = true;
             while(flag){
                 Passador p = (Passador) ois.readObject();
-                System.out.println(p.getJogo().getVez() + " ID: " + p.getId());
+                System.out.println(p.getJogo().getJogo() + " ID: " + p.getId());
                 flag = false;
             }
             ois.close();

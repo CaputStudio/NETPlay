@@ -14,12 +14,12 @@ import java.util.ArrayList;
  */
 public class Jogo  implements Serializable{
     //String X ou O que indica quem deve jogar
-    private String vez;
+    private int vez;
     //Esse array deve ter 9 posicoes com uma string X ou O
     private ArrayList<String> jogo;
     
-    public Jogo(String vez){
-        this.vez = vez;
+    public Jogo(int id){
+        this.vez = id;
         this.jogo = new ArrayList<>();
         this.jogo.add("");
         this.jogo.add("");
@@ -72,14 +72,13 @@ public class Jogo  implements Serializable{
             return diagonal2[0];
         }else{
             return "N";
-        }
-        
+        }        
     }
     
-    public String getVez(){
+    public int getVez(){
         return this.vez;
     }
-    public void setVez(String vez){
+    public void setVez(int vez){
         this.vez = vez;
     }
 }
