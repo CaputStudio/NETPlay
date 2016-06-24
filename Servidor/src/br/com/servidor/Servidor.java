@@ -51,6 +51,7 @@ public class Servidor{
     
     public void interrupt(){
         listener.interrupt();
+        managerCliente.interrupt();
     }
 
     public JTextArea getOut() {

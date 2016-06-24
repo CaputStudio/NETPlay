@@ -5,6 +5,11 @@
  */
 package br.com.form;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author joao
@@ -16,6 +21,7 @@ public class FormConect extends javax.swing.JFrame {
      */
     public FormConect() {
         initComponents();
+        this.setLocationRelativeTo(this);
     }
 
     /**
@@ -37,9 +43,18 @@ public class FormConect extends javax.swing.JFrame {
 
         jLabel1.setText("IP:");
 
+        jTextFieldIP.setText("127.0.0.1");
+
         jLabel2.setText("Porta:");
 
+        jTextFieldPort.setText("12345");
+
         jButton1.setText("Iniciar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -78,6 +93,19 @@ public class FormConect extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            String host = jTextFieldIP.getText();
+            int port = Integer.parseInt(jTextFieldPort.getText());
+            Socket socket = new Socket(host, port);
+            this.setVisible(false);
+            FormPrincipal formPrincipal = new FormPrincipal(socket);
+            formPrincipal.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(FormConect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

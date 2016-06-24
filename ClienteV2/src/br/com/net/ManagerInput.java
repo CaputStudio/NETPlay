@@ -5,17 +5,115 @@
  */
 package br.com.net;
 
+import br.com.form.FormPrincipal;
+import br.com.utils.ClienteUtils;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author joao
  */
 public class ManagerInput {
-    private Thread listerner;    
-    
-    public void doTask(Socket task){
-        
+
+    public static final int LIST = 0, INVITE = 1, QUESTION = 2, ANSWER = 3;
+    public static final String INTENT = "INTENT", CLIENT = "CLIENT", FOE = "FOE", CONTENT = "CONTENT";
+
+    private Thread listerner;
+    private ListernerCliente lc;
+    private FormPrincipal main;
+    private long id;
+    private Socket socket;
+
+    public ManagerInput(FormPrincipal main, Socket socket, long id) {
+        this.main = main;
+        this.id = id;
+        this.socket = socket;
+        lc = new ListernerCliente(socket, this);
+        Thread t = new Thread(lc);
+        t.start();
+        lc.setListen(true);
     }
-    
+
+    private Object content;
+
+    public void doTask(Object arg) {
+        if (arg != null) {
+            try {
+                HashMap<String, Object> map = (HashMap<String, Object>) arg;
+
+                int intent = (int) map.get(INTENT);
+
+                switch (intent) {
+                    case QUESTION: {
+                        showQuestion(map);
+                        break;
+                    }
+                    case ANSWER: {
+                        showAnswer(map.get(CONTENT));
+                        break;
+                    }
+                    default: {
+                        System.out.println("default");
+                    }
+                }
+            } catch (Exception e) {
+                content = arg;
+            }
+        }
+    }
+
+    public long[] getPlayers() {
+        ClienteUtils.send(socket, makeIntent(LIST, id));
+        while (content == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ManagerInput.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        long[] players = (long[]) content;
+        return players;
+    }
+
+    public void invitePlayer(long id, long foe) {
+        ClienteUtils.send(socket, makeIntent(INVITE, id, FOE, foe));
+    }
+
+    private HashMap<String, Object> makeIntent(int intent, long id, Object... args) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(INTENT, intent);
+        map.put(CLIENT, id);
+        int i = 0;
+        if (args != null) {
+            while (i < args.length) {
+                map.put(args[i++].toString(), args[i++]);
+            }
+        }
+        return map;
+    }
+
+    private void showQuestion(HashMap<String, Object> map) {
+        String foe = map.get(FOE).toString();
+        String msg = "O jogador " + foe + " esta chamando você para jogar uma partida.";
+        int anwser = main.getStatus() == 0 ? JOptionPane.showConfirmDialog(main, msg) : JOptionPane.CANCEL_OPTION;
+        if (anwser == JOptionPane.OK_OPTION) {
+            main.openPartida();
+        }
+        ClienteUtils.send(socket, makeIntent(ANSWER, id, FOE, foe, CONTENT, anwser));
+    }
+
+    private void showAnswer(Object arg) {
+        int answer = (int) arg;
+        if (answer == JOptionPane.OK_OPTION) {
+            JOptionPane.showMessageDialog(main, "Convite Aceito");
+            main.openPartida();
+        } else {
+            JOptionPane.showMessageDialog(main, "Convite Negado");
+        }
+    }
+
 }

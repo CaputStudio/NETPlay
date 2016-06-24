@@ -8,6 +8,7 @@ package br.com.utils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,30 +19,47 @@ import java.util.logging.Logger;
  */
 public class ClienteUtils {
 
+    private static ObjectInputStream ois = null;
+    private static ObjectOutputStream oos = null;
+
     public static Object read(Socket socket) {
-        ObjectInputStream ois = null;
         try {
-            ois = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream ois = createOIS(socket);
             return ois.readObject();
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClienteUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e){
+            return null;
         }
-        return null;
     }
 
     public static boolean send(Socket socket, Object arg) {
         ObjectOutputStream oos = null;
         try {
-            oos = new ObjectOutputStream(socket.getOutputStream());
+            oos = createOOS(socket);
             oos.writeObject(arg);
+            System.out.println("Enviei");
             return true;
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
         return false;
+    }
+
+    public static ObjectOutputStream createOOS(Socket socket) throws IOException {
+        if (oos != null) {
+            return oos;
+        } else {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            return oos;
+        }
+    }
+
+    public static ObjectInputStream createOIS(Socket socket) throws IOException {
+        if (ois != null) {
+            return ois;
+        } else {
+            ois = new ObjectInputStream(socket.getInputStream());
+            return ois;
+        }
     }
 
 }

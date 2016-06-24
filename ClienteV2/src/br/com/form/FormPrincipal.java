@@ -5,7 +5,11 @@
  */
 package br.com.form;
 
-import br.com.servidor.Servidor;
+import br.com.net.ManagerInput;
+import br.com.utils.ClienteUtils;
+import java.net.Socket;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -13,11 +17,21 @@ import br.com.servidor.Servidor;
  */
 public class FormPrincipal extends javax.swing.JFrame {
 
-    private Servidor servidor;
-    
-    public FormPrincipal() {
+    private ManagerInput managerInput;
+    private long id;
+    private int status = 0;
+
+    private FormPrincipal() {
         initComponents();
         this.setLocationRelativeTo(this);
+    }
+
+    public FormPrincipal(Socket socket) {
+        this();
+        id = (long) ClienteUtils.read(socket);
+        managerInput = new ManagerInput(this, socket, id);
+        jLabelID.setText(id + "");
+        atualizarList();
     }
 
     /**
@@ -30,28 +44,35 @@ public class FormPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldPort = new javax.swing.JTextField();
-        jToggleButtonStart = new javax.swing.JToggleButton();
+        jLabelID = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextAreaStatus = new javax.swing.JTextArea();
+        jList1 = new javax.swing.JList<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Porta: ");
+        jLabel1.setText("ID:");
 
-        jTextFieldPort.setText("12345");
+        jList1.setBorder(javax.swing.BorderFactory.createTitledBorder("Jogadores Online"));
+        jScrollPane1.setViewportView(jList1);
 
-        jToggleButtonStart.setText("Iniciar");
-        jToggleButtonStart.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setText("Convidar Para Jogar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButtonStartActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
-        jTextAreaStatus.setColumns(20);
-        jTextAreaStatus.setRows(5);
-        jTextAreaStatus.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
-        jScrollPane1.setViewportView(jTextAreaStatus);
+        jButton2.setText("Sair");
+
+        jButton3.setText("Atualizar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -60,13 +81,18 @@ public class FormPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelID)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -75,31 +101,33 @@ public class FormPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jToggleButtonStart)
+                    .addComponent(jLabelID))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jToggleButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonStartActionPerformed
-        if(jToggleButtonStart.isSelected()){
-            jToggleButtonStart.setText("Desligar");            
-            if(servidor != null){
-                servidor.setPort(Integer.parseInt(jTextFieldPort.getText()));
-            }else{
-                servidor = new Servidor(jTextAreaStatus, Integer.parseInt(jTextFieldPort.getText()));
-            }
-            servidor.start();
-        }else{
-            jToggleButtonStart.setText("Inciar");
-            servidor.interrupt();
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        atualizarList();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        long foe = Long.parseLong(jList1.getSelectedValue());
+        if (foe != id) {
+            managerInput.invitePlayer(id, foe);
+        } else {
+            JOptionPane.showMessageDialog(this, "Você não pode jogar contra você mesmo.");
         }
-    }//GEN-LAST:event_jToggleButtonStartActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -137,10 +165,31 @@ public class FormPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelID;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextAreaStatus;
-    private javax.swing.JTextField jTextFieldPort;
-    private javax.swing.JToggleButton jToggleButtonStart;
     // End of variables declaration//GEN-END:variables
+
+    private void atualizarList() {
+        long[] players = managerInput.getPlayers();
+        String[] aux = new String[players.length];
+
+        for (int i = 0; i < players.length; i++) {
+            aux[i] = players[i] + "";
+        }
+        jList1.setModel(new DefaultComboBoxModel<>(aux));
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void openPartida() {
+        
+    }
+
 }

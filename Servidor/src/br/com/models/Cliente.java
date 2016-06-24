@@ -7,10 +7,10 @@ package br.com.models;
 
 import br.com.listerners.ClienteListerner;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +23,8 @@ public class Cliente implements Runnable {
     private Socket socket;
     private long id;
     private ClienteListerner listerner;
+    private ObjectInputStream ois = null;
+    private ObjectOutputStream oos = null;
 
     public ClienteListerner getListerner() {
         return listerner;
@@ -45,34 +47,28 @@ public class Cliente implements Runnable {
     }
 
     public void send(Object arg) {
+        ObjectOutputStream oos = null;
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos = createOOS(socket);
             oos.writeObject(arg);
-        } catch (IOException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Enviei");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public Object receive() {
-        if (!socket.isInputShutdown()) {
+        if(!socket.isInputShutdown() && socket.isConnected()){
             try {
-                InputStream is = socket.getInputStream();
-                if (is != null) {
-                    ObjectInputStream ois = new ObjectInputStream(is);
-                    return ois.readObject();
-                } else {
-                    return null;
-                }
+                ObjectInputStream ois = createOIS(socket);                
+                return ois.readObject();
+            } catch (SocketException s){
+                listerner.getManagerCliente().delCliente(this);
+                System.out.println("Cliente "+this.getId()+" desconectou.");
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    socket.shutdownInput();
-                } catch (IOException ex) {
-                    Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         }
         return null;
@@ -81,12 +77,31 @@ public class Cliente implements Runnable {
     @Override
     public void run() {
         while (true) {
+            System.out.println("Ouvindo o cliente "+this.getId());
             listerner.action(this.receive());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                break;
             }
+        }
+    }
+    
+    public ObjectOutputStream createOOS(Socket socket) throws IOException{
+        if(oos != null){
+            return oos;
+        }else{
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            return oos;
+        }
+    }
+    
+    public ObjectInputStream createOIS(Socket socket) throws IOException{
+        if(ois != null){
+            return ois;
+        }else{
+            ois = new ObjectInputStream(socket.getInputStream());
+            return ois;
         }
     }
 
