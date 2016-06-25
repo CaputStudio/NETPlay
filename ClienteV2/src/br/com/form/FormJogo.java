@@ -43,8 +43,8 @@ public class FormJogo extends javax.swing.JFrame {
     
     public void setButtons(int[][] matriz){
         
-        for(int i = 0; i < 4; i++){
-            for(int j = 0; j< 4; j++){
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j< 3; j++){
                  if(matriz[i][j] == X){
                         btns[i][j].setText("X");
                 }else if(matriz[i][j] == O){
