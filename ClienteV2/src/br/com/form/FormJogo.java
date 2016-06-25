@@ -5,7 +5,9 @@
  */
 package br.com.form;
 
+import br.com.net.ManagerInput;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -13,18 +15,19 @@ import javax.swing.JButton;
  */
 public class FormJogo extends javax.swing.JFrame {
 
-    private static int X = 0;
-    private static int O = 1;
-    private static int V = 2;
+    private int X = 0;
+    private int O = 0;
+    private int V = -1;
     private JButton[][] btns;
-    
-    /**
-     * Creates new form FormJogo
-     */
-    
-    public FormJogo() {
+    private int[][] fields;
+
+    private long turn;
+    private long foe, id;
+    ManagerInput managerInput;
+
+    private FormJogo() {
         initComponents();
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(this);
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         this.btns = new JButton[3][3];
@@ -37,24 +40,44 @@ public class FormJogo extends javax.swing.JFrame {
         btns[2][0] = btn7;
         btns[2][1] = btn8;
         btns[2][2] = btn9;
-        
-        
-    }
-    
-    public void setButtons(int[][] matriz){
-        
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j< 3; j++){
-                 if(matriz[i][j] == X){
-                        btns[i][j].setText("X");
-                }else if(matriz[i][j] == O){
-                        btns[i][j].setText("O");
-                }else{
-                        btns[i][j].setText(" ");
-                }
+
+        this.fields = new int[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                fields[i][j] = V;
             }
         }
-        
+
+    }
+
+    FormJogo(long foe, long id, ManagerInput managerInput, long turn) {
+        this();
+        this.foe = foe;
+        O = (int) foe;
+        this.id = id;
+        X = (int) id;
+        this.managerInput = managerInput;
+        this.turn = turn;
+        managerInput.setFormJogo(this);
+    }
+
+    public void setButtons(int[][] matriz) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (matriz[i][j] == X) {
+                    btns[i][j].setText("X");
+                } else if (matriz[i][j] == O) {
+                    btns[i][j].setText("O");
+                } else {
+                    btns[i][j].setText(" ");
+                }
+                btns[i][j].repaint();
+            }
+        }
+        scanForWinner(matriz);
+        if (id != turn) {
+            turn = id;
+        }
     }
 
     /**
@@ -79,6 +102,60 @@ public class FormJogo extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Jogo da Velha");
+
+        btn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn1ActionPerformed(evt);
+            }
+        });
+
+        btn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn2ActionPerformed(evt);
+            }
+        });
+
+        btn3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn3ActionPerformed(evt);
+            }
+        });
+
+        btn4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn4ActionPerformed(evt);
+            }
+        });
+
+        btn5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn5ActionPerformed(evt);
+            }
+        });
+
+        btn6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn6ActionPerformed(evt);
+            }
+        });
+
+        btn7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn7ActionPerformed(evt);
+            }
+        });
+
+        btn8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn8ActionPerformed(evt);
+            }
+        });
+
+        btn9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn9ActionPerformed(evt);
+            }
+        });
 
         btnSair.setText("Sair");
         btnSair.addActionListener(new java.awt.event.ActionListener() {
@@ -148,6 +225,42 @@ public class FormJogo extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
+    private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        setJogada(0, 0);
+    }//GEN-LAST:event_btn1ActionPerformed
+
+    private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
+        setJogada(0, 1);
+    }//GEN-LAST:event_btn2ActionPerformed
+
+    private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
+        setJogada(0, 2);
+    }//GEN-LAST:event_btn3ActionPerformed
+
+    private void btn4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn4ActionPerformed
+        setJogada(1, 0);
+    }//GEN-LAST:event_btn4ActionPerformed
+
+    private void btn5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn5ActionPerformed
+        setJogada(1, 1);
+    }//GEN-LAST:event_btn5ActionPerformed
+
+    private void btn6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn6ActionPerformed
+        setJogada(1, 2);
+    }//GEN-LAST:event_btn6ActionPerformed
+
+    private void btn7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn7ActionPerformed
+        setJogada(2, 0);
+    }//GEN-LAST:event_btn7ActionPerformed
+
+    private void btn8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn8ActionPerformed
+        setJogada(2, 1);
+    }//GEN-LAST:event_btn8ActionPerformed
+
+    private void btn9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn9ActionPerformed
+        setJogada(2, 2);
+    }//GEN-LAST:event_btn9ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -183,6 +296,31 @@ public class FormJogo extends javax.swing.JFrame {
         });
     }
 
+    public void setJogada(int x, int y) {
+        if (turn == id) {
+            managerInput.sendMove(x, y, id, foe);
+            fields[x][y] = (int) id;
+            setButtons(fields);
+            turn = foe;
+        } else {
+            JOptionPane.showMessageDialog(this, "Não é sua vez de jogar.");
+        }
+    }
+
+    public void postJogada(int x, int y) {
+        fields[x][y] = (int) foe;
+        setButtons(fields);
+    }
+
+    public long getTurn() {
+        return turn;
+    }
+
+    public void setTurn(long turn) {
+        this.turn = turn;
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn1;
     private javax.swing.JButton btn2;
@@ -195,4 +333,97 @@ public class FormJogo extends javax.swing.JFrame {
     private javax.swing.JButton btn9;
     private javax.swing.JButton btnSair;
     // End of variables declaration//GEN-END:variables
+
+    private void scanForWinner(int[][] matriz) {
+        boolean win = true;
+        boolean lose = true;
+        boolean draw = false;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                win = win && (matriz[i][j] == id);
+                lose = lose && (matriz[i][j] == foe);
+
+                draw = draw || (matriz[i][j] == V);
+            }
+
+            if (win) {
+                showWinner(true);
+                return;
+            } else {
+                win = true;
+            }
+            if (lose) {
+                showWinner(false);
+                return;
+            } else {
+                lose = true;
+            }
+
+            for (int j = 0; j < 3; j++) {
+                win = win && (matriz[j][i] == id);
+                lose = lose && (matriz[j][i] == foe);
+            }
+            if (win) {
+                showWinner(true);
+                return;
+            } else {
+                win = true;
+            }
+            if (lose) {
+                showWinner(false);
+                return;
+            } else {
+                lose = true;
+            }
+        }
+
+        if (!draw) {
+            showDraw();
+        }
+
+        for (int i = 0; i < 3; i++) {
+            win = win && (matriz[i][i] == id);
+            lose = lose && (matriz[i][i] == foe);
+        }
+        if (win) {
+            showWinner(true);
+            return;
+        } else {
+            win = true;
+        }
+        if (lose) {
+            showWinner(false);
+            return;
+        } else {
+            lose = true;
+        }
+
+        for (int i = 0, j = 2; i < 3; i++, j--) {
+            win = win && (matriz[i][j] == id);
+            lose = lose && (matriz[i][j] == foe);
+        }
+        if (win) {
+            showWinner(true);
+            return;
+        } else {
+            win = true;
+        }
+        if (lose) {
+            showWinner(false);
+            return;
+        } else {
+            lose = true;
+        }
+    }
+
+    private void showWinner(boolean win) {
+        String msg = win ? "Venceu!" : "Perdeu";
+        JOptionPane.showMessageDialog(this, "Você " + msg);
+        this.dispose();
+    }
+
+    private void showDraw() {
+        JOptionPane.showMessageDialog(this, "Deu velha!");
+        this.dispose();
+    }
 }

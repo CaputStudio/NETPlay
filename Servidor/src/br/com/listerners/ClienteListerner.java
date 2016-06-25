@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class ClienteListerner {
 
-    public static final int LIST = 0, INVITE = 1, QUESTION = 2, ANSWER = 3;
+    public static final int LIST = 0, INVITE = 1, QUESTION = 2, ANSWER = 3, JOGADA = 4;
     public static final String INTENT = "INTENT", CLIENT = "CLIENT", FOE = "FOE", CONTENT = "CONTENT";
 
     private ManagerCliente managerCliente;
@@ -44,8 +44,13 @@ public class ClienteListerner {
                     managerCliente.sendAnswer(map.get(FOE), map.get(CONTENT));
                     break;
                 }
+                
+                case JOGADA:{
+                    managerCliente.sendMove(map.get(FOE), map.get(CONTENT));
+                    break;
+                }
                 default: {
-                    System.out.println("default");
+                    System.out.println("default="+intent);
                 }
             }
         }

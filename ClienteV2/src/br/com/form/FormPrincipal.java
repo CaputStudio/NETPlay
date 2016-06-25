@@ -20,6 +20,8 @@ public class FormPrincipal extends javax.swing.JFrame {
     private ManagerInput managerInput;
     private long id;
     private int status = 0;
+    private FormJogo formJogo;
+    private long foe;
 
     private FormPrincipal() {
         initComponents();
@@ -129,6 +131,7 @@ public class FormPrincipal extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         long foe = Long.parseLong(jList1.getSelectedValue());
         if (foe != id) {
+            this.foe = foe;
             managerInput.invitePlayer(id, foe);
         } else {
             JOptionPane.showMessageDialog(this, "Você não pode jogar contra você mesmo.");
@@ -199,8 +202,18 @@ public class FormPrincipal extends javax.swing.JFrame {
     }
 
     public void openPartida() {
-        FormJogo fj = new FormJogo();
-        
+        this.formJogo = new FormJogo(foe, id, managerInput, foe);
+        this.formJogo.setVisible(true);
+    }
+
+    public FormJogo getFormJogo() {
+        return formJogo;
+    }
+
+    public void openPartida(String foe) {
+        this.foe = Long.parseLong(foe);
+        this.formJogo = new FormJogo(this.foe, id, managerInput, id);
+        this.formJogo.setVisible(true);
     }
 
 }

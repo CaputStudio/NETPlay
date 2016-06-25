@@ -5,6 +5,7 @@
  */
 package br.com.net;
 
+import br.com.form.FormJogo;
 import br.com.form.FormPrincipal;
 import br.com.utils.ClienteUtils;
 import java.net.Socket;
@@ -19,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class ManagerInput {
 
-    public static final int LIST = 0, INVITE = 1, QUESTION = 2, ANSWER = 3;
+    public static final int LIST = 0, INVITE = 1, QUESTION = 2, ANSWER = 3, JOGADA = 4;
     public static final String INTENT = "INTENT", CLIENT = "CLIENT", FOE = "FOE", CONTENT = "CONTENT";
 
     private Thread listerner;
@@ -27,6 +28,7 @@ public class ManagerInput {
     private FormPrincipal main;
     private long id;
     private Socket socket;
+    private FormJogo formJogo;
 
     public ManagerInput(FormPrincipal main, Socket socket, long id) {
         this.main = main;
@@ -36,6 +38,14 @@ public class ManagerInput {
         Thread t = new Thread(lc);
         t.start();
         lc.setListen(true);
+    }
+
+    public FormJogo getFormJogo() {
+        return formJogo;
+    }
+
+    public void setFormJogo(FormJogo formJogo) {
+        this.formJogo = formJogo;
     }
 
     private Object content;
@@ -56,8 +66,12 @@ public class ManagerInput {
                         showAnswer(map.get(CONTENT));
                         break;
                     }
+                    case JOGADA: {
+                        receiveMove(map);
+                        break;
+                    }
                     default: {
-                        System.out.println("default");
+                        System.out.println("default="+intent);
                     }
                 }
             } catch (Exception e) {
@@ -101,7 +115,7 @@ public class ManagerInput {
         String msg = "O jogador " + foe + " esta chamando você para jogar uma partida.";
         int anwser = main.getStatus() == 0 ? JOptionPane.showConfirmDialog(main, msg) : JOptionPane.CANCEL_OPTION;
         if (anwser == JOptionPane.OK_OPTION) {
-            main.openPartida();
+            main.openPartida(foe);
         }
         ClienteUtils.send(socket, makeIntent(ANSWER, id, FOE, foe, CONTENT, anwser));
     }
@@ -114,6 +128,18 @@ public class ManagerInput {
         } else {
             JOptionPane.showMessageDialog(main, "Convite Negado");
         }
+    }
+
+    public void sendMove(int x, int y, long id, long foe) {
+        Object intent = makeIntent(JOGADA, id, FOE, foe, CONTENT, new Integer[]{x, y});
+        ClienteUtils.send(socket, intent);
+    }
+
+    public void receiveMove(HashMap<String, Object> map) {
+        System.out.println("Jogada chegando");
+        Integer[] pos = (Integer[]) map.get(CONTENT);
+        formJogo.postJogada(pos[0], pos[1]);
+        System.out.println("Postei jogada");
     }
 
 }

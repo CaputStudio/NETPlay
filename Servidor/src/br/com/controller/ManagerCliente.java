@@ -102,6 +102,15 @@ public class ManagerCliente {
         c.send(makeIntent(ClienteListerner.ANSWER, c.getId(), ClienteListerner.CONTENT, anwser));
         System.out.println("enviei para o cliente "+c.getId());
     }
+
+    public void sendMove(Object idO, Object content) {
+        System.out.println("Enviando movimento");
+        long id = (long)idO;
+        Object intent = makeIntent(ClienteListerner.JOGADA, id, ClienteListerner.CONTENT, content);
+        Cliente c = mapClient.get(id);
+        c.send(intent);
+        System.out.println("Enviado movimento");
+    }
     
     
 }
