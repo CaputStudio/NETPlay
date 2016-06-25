@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,6 +41,7 @@ public class FormConect extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Conectar ao servidor");
 
         jLabel1.setText("IP:");
 
@@ -103,7 +105,7 @@ public class FormConect extends javax.swing.JFrame {
             FormPrincipal formPrincipal = new FormPrincipal(socket);
             formPrincipal.setVisible(true);
         } catch (IOException ex) {
-            Logger.getLogger(FormConect.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Não foi possível realizar conexão ao servidor.");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
