@@ -36,6 +36,7 @@ public class FormPrincipal extends javax.swing.JFrame {
         jTextAreaStatus = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Servidor");
 
         jLabel1.setText("Porta: ");
 

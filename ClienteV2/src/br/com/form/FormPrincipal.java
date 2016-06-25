@@ -200,6 +200,7 @@ public class FormPrincipal extends javax.swing.JFrame {
 
     public void openPartida() {
         FormJogo fj = new FormJogo();
+        
     }
 
 }

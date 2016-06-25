@@ -42,7 +42,7 @@ public class FormJogo extends javax.swing.JFrame {
         btn9 = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Jogo da Velha");
 
         btnSair.setText("Sair");
