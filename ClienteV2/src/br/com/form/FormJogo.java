@@ -5,20 +5,55 @@
  */
 package br.com.form;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author joao
  */
 public class FormJogo extends javax.swing.JFrame {
 
+    private static int X = 0;
+    private static int O = 1;
+    private static int V = 2;
+    private JButton[][] btns;
+    
     /**
      * Creates new form FormJogo
      */
+    
     public FormJogo() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setAlwaysOnTop(true);
         this.setVisible(true);
+        this.btns = new JButton[3][3];
+        btns[0][0] = btn1;
+        btns[0][1] = btn2;
+        btns[0][2] = btn3;
+        btns[1][0] = btn4;
+        btns[1][1] = btn5;
+        btns[1][2] = btn6;
+        btns[2][0] = btn7;
+        btns[2][1] = btn8;
+        btns[2][2] = btn9;
+        
+        
+    }
+    
+    public void setButtons(int[][] matriz){
+        
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j< 4; j++){
+                 if(matriz[i][j] == X){
+                        btns[i][j].setText("X");
+                }else if(matriz[i][j] == O){
+                        btns[i][j].setText("O");
+                }else{
+                        btns[i][j].setText(" ");
+                }
+            }
+        }
         
     }
 
